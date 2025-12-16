@@ -1,0 +1,41 @@
+import { 
+  Layers, 
+  Image as ImageIcon, 
+  Sliders, 
+  Download, 
+  Save, 
+  MoreVertical, 
+  ChevronRight, 
+  Plus, 
+  Trash2, 
+  Eye, 
+  Activity, 
+  Zap, 
+  FolderOpen, 
+  LayoutGrid, 
+  Heart, 
+  Share2, 
+  CheckCircle, 
+  AlertTriangle 
+} from 'lucide-react';
+
+export const Icons = {
+  Layers,
+  Image: ImageIcon,
+  Sliders,
+  Download,
+  Save,
+  MoreVertical,
+  ChevronRight,
+  Plus,
+  Trash2,
+  Eye,
+  Activity,
+  Zap,
+  FolderOpen,
+  LayoutGrid,
+  Heart,
+  Share2,
+  CheckCircle,
+  AlertTriangle
+};
