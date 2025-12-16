@@ -8,10 +8,10 @@ export default defineConfig(({ mode }) => {
   
   return {
     plugins: [react()],
-    base: mode === 'production' ? '/LookLabAI/' : '/',
+    // SU VERCEL: Usa sempre '/' come base.
+    base: '/',
     define: {
-      // Sostituisce la stringa 'process.env.API_KEY' con il valore reale o una stringa vuota
-      // Questo avviene durante la build/serve di Vite.
+      // Sostituisce la stringa 'process.env.API_KEY' con il valore reale durante la build
       'process.env.API_KEY': JSON.stringify(env.API_KEY || '')
     }
   }
