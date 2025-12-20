@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
@@ -15,7 +14,6 @@ const INITIAL_PROJECTS: Project[] = [
   { id: 'p2', name: 'Urban Run', client: 'Nike', type: 'Commercial', date: '2024-09-15' },
 ];
 
-// Fix: Correctly define and extend the global AIStudio interface to match the expected property on window
 declare global {
   interface AIStudio {
     hasSelectedApiKey: () => Promise<boolean>;
@@ -196,6 +194,36 @@ const App: React.FC = () => {
     } finally { setIsProcessing(false); }
   };
 
+  const handleExportZip = async () => {
+    const processedItems = batchImages.filter(item => item.processedUrl);
+    if (processedItems.length === 0) {
+      alert("Nessuna immagine processata da esportare.");
+      return;
+    }
+    
+    setIsProcessing(true);
+    try {
+      const zip = new JSZip();
+      const folder = zip.folder("LookLab_Export");
+      
+      for (const item of processedItems) {
+        if (item.processedUrl) {
+          const res = await fetch(item.processedUrl);
+          const blob = await res.blob();
+          folder?.file(`looklab_asset_${item.id.slice(-4)}.png`, blob);
+        }
+      }
+      
+      const content = await zip.generateAsync({ type: "blob" });
+      FileSaver.saveAs(content, `LookLab_Export_${new Date().getTime()}.zip`);
+    } catch (err) {
+      console.error("Errore durante l'esportazione:", err);
+      alert("Errore durante la creazione dello ZIP.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const activeProject = projects.find(p => p.id === selectedProject);
 
   return (
@@ -247,7 +275,11 @@ const App: React.FC = () => {
                <Icons.Zap size={14} />
                <span>{hasProKey ? 'QUOTA PRO ATTIVA' : 'SBLOCCA QUOTA PRO'}</span>
             </button>
-            <button className="bg-white text-anthracite-900 px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-neon-banana transition-colors">
+            <button 
+              onClick={handleExportZip}
+              className="bg-white text-anthracite-900 px-4 py-2 rounded-md text-sm font-bold flex items-center gap-2 hover:bg-neon-banana transition-colors disabled:opacity-50"
+              disabled={isProcessing || batchImages.filter(i => i.processedUrl).length === 0}
+            >
               <Icons.Download size={16} /> <span className="hidden sm:inline">Export ZIP</span>
             </button>
           </div>
